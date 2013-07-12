@@ -10,7 +10,7 @@ import AssemblyKeys._
 object SparkBuild extends Build {
   // Hadoop version to build against. For example, "0.20.2", "0.20.205.0", or
   // "1.0.4" for Apache releases, or "0.20.2-cdh3u5" for Cloudera Hadoop.
-  val HADOOP_VERSION = "1.0.4"
+  val HADOOP_VERSION = "1.1.2"
   val HADOOP_MAJOR_VERSION = "1"
   val HADOOP_YARN = false
 
