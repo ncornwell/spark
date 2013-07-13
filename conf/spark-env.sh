@@ -22,3 +22,4 @@ export SCALA_HOME=/opt/spark_test/scala-2.9.3
 export SPARK_MEM=10g
 export SPARK_WORKER_MEMORY=20g
 export MASTER="spark://db1.stg:7077"
+export HADOOP_HOME=/hadoop/hadoop
