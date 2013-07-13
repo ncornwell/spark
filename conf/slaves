@@ -1,2 +1,4 @@
 # A Spark Worker will be started on each of the machines listes below.
-localhost
+ryu1.stg
+ryu2.stg
+ryu3.stg
