@@ -19,6 +19,6 @@
 
 
 export SCALA_HOME=/opt/spark_test/scala-2.9.3
-export SPARK_MEM=21g
-export SPARK_WORKER_MEMORY=21g
+export SPARK_MEM=10g
+export SPARK_WORKER_MEMORY=20g
 export MASTER="spark://10.5.2.14:7077"
