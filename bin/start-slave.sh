@@ -13,6 +13,5 @@ if [ "$SPARK_PUBLIC_DNS" = "" ]; then
 fi
 
 git pull
-./sbt/sbt compile
 
 "$bin"/spark-daemon.sh start spark.deploy.worker.Worker "$@"
