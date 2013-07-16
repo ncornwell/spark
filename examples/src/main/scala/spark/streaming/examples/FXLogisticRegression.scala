@@ -45,6 +45,8 @@ object FXLogisticRegression {
       val bid = prices.find(_._2 == 0).getOrElse(1.0 -> 1)
       val offer = prices.find(_._2 == 1).getOrElse(1.0 -> 1)
 
+      println(symbol -> MarketData(bid._1, offer._1, time))
+
       symbol -> MarketData(bid._1, offer._1, time)
     }).filter(_._1 == "EUR/USD").map(_._2)
 
