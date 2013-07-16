@@ -2,6 +2,8 @@ package spark.streaming.examples
 
 import spark._
 import spark.streaming.{DStream, Seconds, StreamingContext}
+import org.apache.hadoop.io.{Text, LongWritable}
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 
 object FXLogisticRegression {
 
@@ -13,14 +15,18 @@ object FXLogisticRegression {
     import java.text.SimpleDateFormat
     import java.util._
 
-    val textFile = ssc.textFileStream("hdfs://db1.stg:9000/fix/stream/marketdata/")
+    val textFile = ssc.fileStream[LongWritable, Text, TextInputFormat](
+      "hdfs://db1.stg:9000/fix/stream/marketdata/",
+      p => !p.getName.contains("tmp"),
+      newFilesOnly = true)
+      .map(_._2.toString)
 
     val format = new SimpleDateFormat("yyyyMMdd-HH:mm:ss")
     format.setTimeZone(TimeZone.getTimeZone("GMT"))
 
     case class MarketData(bid: Double, offer: Double, time: Long)
 
-    val marketData:DStream[MarketData] = textFile
+    val marketData: DStream[MarketData] = textFile
       .filter(line => line.contains("35=X") && line.contains("EUR/USD"))
       .map(line => {
       val time = format.parse(line.substring(line.indexOf("52=") + 3, line.indexOf("\001262="))).getTime
@@ -38,7 +44,7 @@ object FXLogisticRegression {
       val offer = prices.find(_._2 == 1).getOrElse(1.0 -> 1)
 
       MarketData(bid._1, offer._1, time)
-    }).window(Seconds(30))
+    })
 
     val deltas = marketData.glom().flatMap(e => {
       val timeData = e.sortBy(_.time).sliding(2).filter(_.length == 2).map(seq => math.log(seq(1).bid / seq(0).bid)).filter(_ != Double.NaN).toList
