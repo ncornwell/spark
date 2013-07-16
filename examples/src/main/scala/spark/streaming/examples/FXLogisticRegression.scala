@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.Path
 object FXLogisticRegression {
 
   def main(args: Array[String]) {
-    val ssc = new StreamingContext(System.getenv("MASTER"), "FXStream", Seconds(10),
+    val ssc = new StreamingContext(System.getenv("MASTER"), "FXStream", Seconds(30),
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
 
     import scala.math.exp
@@ -56,18 +56,16 @@ object FXLogisticRegression {
     })
 
     val rand = new Random(42)
-
-
+    var w = spark.util.Vector(3, _ => 2 * rand.nextDouble - 1)
+    println("Initial w: " + w)
 
     deltas.foreach(d => {
-      var w = spark.util.Vector(3, _ => 2 * rand.nextDouble - 1)
-      println("Initial w: " + w)
       for (i <- 1 to 5) {
         println("On iteration " + i)
         val gradient = d.map {
           p =>
             (1 / (1 + exp(-p._1 * (w dot p._2))) - 1) * p._1 * p._2
-        }.reduce(_ + _)
+        }.aggregate(spark.util.Vector(0.0, 0.0, 0.0))(_ + _, _ + _)
         w -= gradient
       }
 
@@ -78,7 +76,12 @@ object FXLogisticRegression {
 
       val rmse = math.sqrt(rme)
 
-      println(rmse)
+      println("Error:" + rmse)
+
+      val buySell = if ((d.first()._2 dot w) > 0.0) "BUY!!!!" else "SELL!!!!"
+      println(buySell)
+      println(buySell)
+      println(buySell)
     })
 
 
