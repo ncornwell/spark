@@ -6,7 +6,7 @@ import spark.streaming.{DStream, Seconds, StreamingContext}
 object FXLogisticRegression {
 
   def main(args: Array[String]) {
-    val ssc = new StreamingContext("spark://db1.stg:7070", "FX", Seconds(10),
+    val ssc = new StreamingContext(System.getenv("MASTER"), "FX", Seconds(10),
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
 
     import scala.math.exp

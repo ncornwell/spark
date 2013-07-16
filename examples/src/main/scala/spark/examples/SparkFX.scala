@@ -8,7 +8,7 @@ object SparkFX {
   def main(args: Array[String]) {
 
 
-    val sc = new SparkContext("spark://db1.stg:7070", "FX",
+    val sc = new SparkContext(System.getenv("MASTER"), "FX",
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
 
 
