@@ -77,7 +77,9 @@ object FXLogisticRegression {
 
       val rmse = math.sqrt(rme)
 
-      println("Error:" + rmse)
+      println("New Values: " + d.count())
+      println("Weights: " + w)
+      println("Error: " + rmse)
 
       val buySell = if ((d.first()._2 dot w) > 0.0) "BUY!!!!" else "SELL!!!!"
       println(buySell)
