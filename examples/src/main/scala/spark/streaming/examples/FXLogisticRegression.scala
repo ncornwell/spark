@@ -28,7 +28,8 @@ object FXLogisticRegression {
     case class MarketData(bid: Double, offer: Double, time: Long)
 
     val marketData: DStream[MarketData] = textFile
-      .filter(line => line.contains("35=X") && line.contains("EUR/USD"))
+      .filter(line => line.contains("35=X"))
+      //.filter(line => line.contains("35=X") && line.contains("EUR/USD"))
       .map(line => {
       val time = format.parse(line.substring(line.indexOf("52=") + 3, line.indexOf("\001262="))).getTime
 
@@ -72,7 +73,7 @@ object FXLogisticRegression {
       val rme = d.map(i => {
         val res = i._1 - (i._2 dot w)
         res * res
-      }).reduce(_ + _) / d.count
+      }).aggregate(0.0)(_ + _, _ + _) / d.count
 
       val rmse = math.sqrt(rme)
 
