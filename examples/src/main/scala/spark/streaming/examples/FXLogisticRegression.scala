@@ -4,11 +4,12 @@ import spark._
 import spark.streaming.{DStream, Seconds, StreamingContext}
 import org.apache.hadoop.io.{Text, LongWritable}
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
+import org.apache.hadoop.fs.Path
 
 object FXLogisticRegression {
 
   def main(args: Array[String]) {
-    val ssc = new StreamingContext(System.getenv("MASTER"), "FX", Seconds(10),
+    val ssc = new StreamingContext(System.getenv("MASTER"), "FXStream", Seconds(10),
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
 
     import scala.math.exp
@@ -17,7 +18,7 @@ object FXLogisticRegression {
 
     val textFile = ssc.fileStream[LongWritable, Text, TextInputFormat](
       "hdfs://db1.stg:9000/fix/stream/marketdata/",
-      p => !p.getName.contains("tmp"),
+      (p:Path) => !p.getName.contains("tmp"),
       newFilesOnly = true)
       .map(_._2.toString)
 
